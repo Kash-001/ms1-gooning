@@ -2,6 +2,8 @@
 
 This script was made to automate any task that can be automated on [mining simulator 1](https://www.roblox.com/fr/games/1417427737/Mining-Simulator), roblox.
 
+![Gooning v1](https://github.com/Kash-001/ms1-gooning/blob/main/f0def4b4-c0c3-4100-ac6e-297d9a60d868.webp)
+
 ## Features
 
 - **Full Automation**: Automate mining, selling, and rebirthing processes.
