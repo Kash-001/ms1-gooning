@@ -19,9 +19,7 @@ This script was made to automate any task that can be automated on [mining simul
 
 1. **Using loadstring**: Paste this to your executor : 
 <pre>
-```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Kash-001/ms1-gooning/gooning.lua"))()
-```
 </pre>
 
 3. **Using raw**: Copy the [raw code](https://raw.githubusercontent.com/Kash-001/ms1-gooning/gooning.lua), and paste it to your executor
