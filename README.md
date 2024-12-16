@@ -10,11 +10,11 @@ This script was made to automate any task that can be automated on [mining simul
 - **Modular Automation**: Enable or disable individual automation tasks (mining, selling, rebirthing) as needed.
 - **Easy Configuration**: Configure easily the script.
 - **Clean GUI**: Nice and customizable UI from Kavo.
+- **Continuity**: Brings you back to farming after falling into void.
+- **Anti Collapsing**: Automatically gets you to the mine.
 
 ## Upcomming Features
 
-- **Positioning**: Avoid your from falling under the map.
-- **Anti Collapsing**: Automatically gets you to the mine.
 - **New Selling**: New selling method to improve autoselling speed.
 
 ## Execution
