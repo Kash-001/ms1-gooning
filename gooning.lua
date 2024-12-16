@@ -1,5 +1,5 @@
 -- UI LOCALS
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kash-001/luau-ui-libraries/refs/heads/main/KavoUiLibrary.lua"))()
 -- local Window = Library.CreateLib("Gooning", "DarkTheme")
 local Window = Library.CreateLib("Gooning", "BloodTheme")
 -- local Window = Library.CreateLib("Gooning", "Synapse")
