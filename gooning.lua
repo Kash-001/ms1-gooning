@@ -3,6 +3,8 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kash-
 -- local Window = Library.CreateLib("Gooning", "DarkTheme")
 local Window = Library.CreateLib("Gooning", "BloodTheme")
 -- local Window = Library.CreateLib("Gooning", "Synapse")
+
+-- GLOBAL VARIABLES
 _G.SellingTreshold = 0
 
 -- GAME LOCALS
@@ -11,12 +13,45 @@ local Remote = game.ReplicatedStorage.Network:InvokeServer()
 local Character = LocalPlayer.Character
 local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
 local InventoryAmount = LocalPlayer.PlayerGui.ScreenGui.StatsFrame2.Inventory.Amount
+local Humanoid = Character:WaitForChild("Humanoid")
 local Blocks = game.Workspace.Blocks
+local GC = getconnections or get_signal_cons
+local cloneref = cloneref or function(o) return o end
 
--- TP SELL LOCALS
-local x = -117.57
-local y = 10.39
-local z = 42.77
+-- POSITIONS LOCALS
+local LavaMineTopPosition = Vector3.new(33, 12, 26205)
+local SellPointPosition = Vector3.new(-117.57, 10.39, 42.77)
+local LavaTeleportPadPosition = Vector3.new(-29.3160343170166, 11.087592124938965, 84.10152435302734)
+
+-- TO AVOID HITTING THEM
+if game.workspace:FindFirstChild("TopMiners") then
+    game.workspace.TopMiners:Destroy()
+end
+if game.workspace:FindFirstChild("MostRebirth") then
+    game.workspace.MostRebirth:Destroy()
+end
+if game.workspace:FindFirstChild("DailyBoard") then
+    game.workspace.DailyBoard:Destroy()
+end
+
+-----------------------------------
+----------- LISTENERS -------------
+-----------------------------------
+game.Workspace.Collapsed.Changed:connect(function()
+    if IsAutoFarmEnabled then
+        Humanoid:MoveTo(LavaMineTopPosition)
+    end
+end)
+
+Humanoid.Died:connect(function()
+    if IsAutoFarmEnabled then
+        wait(6)
+        local NewHumanoid = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+        NewHumanoid:MoveTo(LavaTeleportPadPosition)
+        wait(6)
+        NewHumanoid:MoveTo(LavaMineTopPosition)
+    end
+end)
 
 -----------------------------------
 ----------- FUNCTIONS -------------
@@ -47,7 +82,7 @@ local function SellInventory()
     local ActualInventorySize = GetInventoryAmount()
 
     while ActualInventorySize ~= 0 do
-        HumanoidRootPart.CFrame = CFrame.new(x,y,z)
+        HumanoidRootPart.CFrame = CFrame.new(SellPointPosition)
         Remote:FireServer("SellItems",{{               }})
         wait()
         ActualInventorySize = GetInventoryAmount()
@@ -166,8 +201,9 @@ end)
 
 AutosTabSection:NewToggle("AutoFarm","Auto Mine / Rebirth / Sell", function(state)
     if state then
-        if _G.SellingTreshold ~= 0 then
+        if _G.SellingTreshold > 0 then
             IsAutoFarmEnabled = true
+            Humanoid:MoveTo(LavaMineTopPosition)
 
             while IsAutoFarmEnabled do
                 if HumanoidRootPart then
@@ -233,6 +269,37 @@ SellTabSection:NewToggle("Full Bag AutoSell","Sell each time your bag is full", 
     else
         IsAutoSellFullBagEnabled = false
     end
+end)
+
+
+-----------------------------------
+----------- MISC TAB --------------
+-----------------------------------
+local MiscTab = Window:NewTab("Misc")
+local MiscTabSection = MiscTab:NewSection("Misc")
+
+MiscTabSection:NewButton("Anti AFK", "Enable Anti AFK (no disable)", function()
+    if GC then
+        for i,v in pairs(GC(LocalPlayer.Idled)) do
+            if v["Disable"] then
+                v["Disable"](v)
+            elseif v["Disconnect"] then
+                v["Disconnect"](v)
+            end
+        end
+    else
+        local VirtualUser = cloneref(game:GetService("VirtualUser"))
+        LocalPlayer.Idled:Connect(function()
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton2(Vector2.new())
+        end)
+    end
+end)
+
+MiscTabSection:NewButton("Destroy Gooning", "Kills the UI and the scripts", function()
+    local KavoInstanceToDestroy = _G.isKavo
+    _G.isKavo = nil
+    game.CoreGui[KavoInstanceToDestroy]:Destroy()
 end)
 
 -----------------------------------
