@@ -5,7 +5,7 @@ local Window = Library.CreateLib("Gooning", "BloodTheme")
 -- local Window = Library.CreateLib("Gooning", "Synapse")
 _G.SellingTreshold = 0
 
--- GMAE LOCALS
+-- GAME LOCALS
 local LocalPlayer = game.Players.LocalPlayer
 local Remote = game.ReplicatedStorage.Network:InvokeServer()
 local Character = LocalPlayer.Character
