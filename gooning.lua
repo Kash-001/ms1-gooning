@@ -1,8 +1,14 @@
 -- UI LOCALS
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kash-001/luau-ui-libraries/refs/heads/main/KavoUiLibrary.lua"))()
+
 -- local Window = Library.CreateLib("Gooning", "DarkTheme")
 local Window = Library.CreateLib("Gooning", "BloodTheme")
 -- local Window = Library.CreateLib("Gooning", "Synapse")
+
+-- waiting for data
+while not game.Players.LocalPlayer:FindFirstChild("leaderstats") do
+    wait()
+end
 
 -- GLOBAL VARIABLES
 if not _G.SellingTreshold then
@@ -177,6 +183,13 @@ end)
 AutosTabSection:NewToggle("AutoRebirth","Autorebirth when enough money", function(state)
     if state then
         IsAutoRebirthEnabled = true
+
+        while IsAutoRebirthEnabled do
+            if GetTotalCoins() >= GetRebirthPrice() then
+                Remote:FireServer("Rebirth",{{}})
+            end
+            wait(0.2)
+        end
     else
         IsAutoRebirthEnabled = false
     end
