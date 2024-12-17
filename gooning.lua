@@ -39,6 +39,7 @@ end
 -----------------------------------
 game.Workspace.Collapsed.Changed:connect(function()
     if IsAutoFarmEnabled then
+	wait(1)
         Humanoid:MoveTo(LavaMineTopPosition)
     end
 end)
