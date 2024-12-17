@@ -12,10 +12,21 @@ This script was made to automate any task that can be automated on [mining simul
 - **Clean GUI**: Nice and customizable UI from Kavo.
 - **Continuity**: Brings you back to farming after falling into void.
 - **Anti Collapsing**: Automatically gets you to the mine.
+- **Efficiency**: Fast selling and mining methods.
 
 ## Upcomming Features
 
-- **New Selling**: New selling method to improve autoselling speed.
+- nothing for now, let me know if you need something
+
+## Latest Update
+
+- Added halloween shop access
+- Improved selling and mining
+- Improved overhaul performances
+- fixed falling in void and mine reset
+- added wait for data to avoid reexecution
+- added portage of selling treshold
+- modified the lib to avoid multiple instances of gooning
 
 ## Execution
 
