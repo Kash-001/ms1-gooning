@@ -21,14 +21,17 @@ local Remote = game.ReplicatedStorage.Network:InvokeServer()
 local RunService = game:GetService("RunService")
 local RunServiceStepped = game:GetService("RunService").Stepped
 local Character = LocalPlayer.Character
+local VirtualUser = game:GetService("VirtualUser")
 local HumanoidRootPart = Character:FindFirstChild("HumanoidRootPart")
 local InventoryAmount = LocalPlayer.PlayerGui.ScreenGui.StatsFrame2.Inventory.Amount
 local Humanoid = Character:WaitForChild("Humanoid")
 local Blocks = game.Workspace.Blocks
-local GC = getconnections or get_signal_cons
-local cloneref = cloneref or function(o) return o end
 local RebirthsAmount = LocalPlayer.leaderstats.Rebirths
 local DepthAmount = LocalPlayer.PlayerGui.ScreenGui.TopInfoFrame.Depth
+local IsNotGoingBackToMine = true
+local UpdateDailyStats = true
+local IdInRebirthStats = nil
+local IdInMinedStats = nil
 
 -- POSITIONS
 local SellPointPosition = CFrame.new(41.96064, 15.8550873, -1239.64648, 1, 0, 0, 0, 1, 0, 0, 0, 1)
@@ -42,6 +45,10 @@ local function Split(s, delimiter)
         table.insert(result, match);
     end
     return result;
+end
+
+local function formatNumberThreeDigits(num)
+    return string.format("%0.0f", num):reverse():gsub("(%d%d%d)", "%1 "):reverse():gsub("^%s+", "")
 end
 
 local function GetInventoryAmount()
@@ -113,9 +120,24 @@ local function SendInformation(GivenInfo)
     })
 end
 
+local function AssignIDLeaderboards(leaderboard)
+    for _,child in ipairs(game.workspace[leaderboard].Part.SurfaceGui.Players:GetChildren()) do
+        if child:IsA("Frame") then 
+            if child.PlayerName.Text == tostring(LocalPlayer) then
+                if leaderboard == "DailyBoard" then
+                    IdInMinedStats = child.Name
+                else
+                    IdInRebirthStats = child.Name
+                end
+            end
+        end
+    end
+end
+
 local function GoBackMining()
     if IsAutoFarmEnabled then
         IsAutoFarmEnabled = false
+        IsNotGoingBackToMine = false
         local WasAutoFarmEnabled = true
     end
 
@@ -144,6 +166,7 @@ local function GoBackMining()
     if WasAutoFarmEnabled then
         wait(1)
         IsAutoFarmEnabled = true
+        IsNotGoingBackToMine = true
     end
 end
 
@@ -153,7 +176,6 @@ end
 local AutosTab = Window:NewTab("Autos")
 local AutosTabSection = AutosTab:NewSection("Automations")
 
-local InventoryContains = GetInventoryAmount()
 local IsAutoSellEnabled = false
 local IsAutoRebirthEnabled = false
 local IsAutoMineEnabled = false
@@ -183,13 +205,6 @@ end)
 AutosTabSection:NewToggle("AutoRebirth","Autorebirth when enough money", function(state)
     if state then
         IsAutoRebirthEnabled = true
-
-        while IsAutoRebirthEnabled do
-            if GetTotalCoins() >= GetRebirthPrice() then
-                Remote:FireServer("Rebirth",{{}})
-            end
-            wait(0.2)
-        end
     else
         IsAutoRebirthEnabled = false
     end
@@ -241,10 +256,8 @@ AutosTabSection:NewToggle("AutoFarm","Auto Mine / Rebirth / Sell", function(stat
                             RunServiceStepped:Wait()
                         end
                         InventoryContains = GetInventoryAmount()
-                        if InventoryContains >= _G.SellingTreshold then
+                        if InventoryContains >= _G.SellingTreshold and IsNotGoingBackToMine then
                             SellInventory()
-                            wait(0.2)
-                            Remote:FireServer("Rebirth",{{}})
                         end
                     end
                 end
@@ -266,11 +279,7 @@ local SellTabSection = SellTab:NewSection("Selling")
 local IsAutoSellFullBagEnabled = false
 
 SellTabSection:NewButton("One Time Sell", "Sell your inventory one time", function()
-    InventoryContains = GetInventoryAmount()
-    while InventoryContains ~= 0 do
-        SellInventory()
-        wait()
-    end
+    SellInventory()
 end)
 
 SellTabSection:NewToggle("Full Bag AutoSell","Sell each time your bag is full", function(state)
@@ -300,26 +309,9 @@ end)
 local MiscTab = Window:NewTab("Misc")
 local MiscTabSection = MiscTab:NewSection("Misc")
 
-MiscTabSection:NewButton("Anti AFK", "Enable Anti AFK (no disable)", function()
-    if GC then
-        for i,v in pairs(GC(LocalPlayer.Idled)) do
-            if v["Disable"] then
-                v["Disable"](v)
-            elseif v["Disconnect"] then
-                v["Disconnect"](v)
-            end
-        end
-    else
-        local VirtualUser = cloneref(game:GetService("VirtualUser"))
-        LocalPlayer.Idled:Connect(function()
-            VirtualUser:CaptureController()
-            VirtualUser:ClickButton2(Vector2.new())
-        end)
-    end
-end)
-
 MiscTabSection:NewButton("Destroy Gooning", "Kills the UI and the scripts", function()
     local KavoInstanceToDestroy = _G.isKavo
+    UpdateDailyStats = false
     _G.isKavo = nil
     game.CoreGui[KavoInstanceToDestroy]:Destroy()
 end)
@@ -345,6 +337,18 @@ ConfigTabSection:NewTextBox("Selling Treshold", "Enter at how much blocks you se
 end)
 
 -----------------------------------
+----------- STATS TAB -------------
+-----------------------------------
+
+local StatsTab = Window:NewTab("Stats")
+local StatsTabSection = StatsTab:NewSection("Statistics")
+
+local TotalRebirthsLabel = StatsTabSection:NewLabel("Total Rebirths : "..formatNumberThreeDigits(LocalPlayer.leaderstats.Rebirths.Value))
+local DailyRebrithsLabel = StatsTabSection:NewLabel("Daily Rebirths : ")
+local TotalBlocksMinedLabel = StatsTabSection:NewLabel("Total Blocks : "..formatNumberThreeDigits(LocalPlayer.leaderstats["Blocks Mined"].Value))
+local DailyBlocksMinedLabel = StatsTabSection:NewLabel("Daily Blocks : ")
+
+-----------------------------------
 ----------- LISTENERS -------------
 -----------------------------------
 game.Workspace.Collapsed.Changed:connect(function()
@@ -362,7 +366,21 @@ DepthAmount.Changed:connect(function()
 end)
 
 RunService:BindToRenderStep("Rebirth", Enum.RenderPriority.Camera.Value, function()
-    if (IsAutoRebirthEnabled or IsAutoFarmEnabled) and GetCoinsAmount() >= (10000000 * (RebirthsAmount.Value + 1)) then
+    if (IsAutoRebirthEnabled or IsAutoFarmEnabled) and GetTotalCoins() >= (10000000 * (RebirthsAmount.Value + 1)) then
         Remote:FireServer("Rebirth", {{}})
     end
+end)
+
+LocalPlayer.leaderstats["Blocks Mined"].Changed:connect(function()
+    TotalBlocksMinedLabel:UpdateLabel("Total Blocks : "..formatNumberThreeDigits(LocalPlayer.leaderstats["Blocks Mined"].Value))
+end)
+
+LocalPlayer.leaderstats.Rebirths.Changed:connect(function()
+    TotalRebirthsLabel:UpdateLabel("Total Blocks : "..formatNumberThreeDigits(LocalPlayer.leaderstats.Rebirths.Value))
+end)
+
+LocalPlayer.Idled:Connect(function()
+    VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+    wait(1)
+    VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
 end)
