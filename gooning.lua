@@ -379,7 +379,7 @@ LocalPlayer.leaderstats.Rebirths.Changed:connect(function()
     TotalRebirthsLabel:UpdateLabel("Total Blocks : "..formatNumberThreeDigits(LocalPlayer.leaderstats.Rebirths.Value))
 end)
 
-LocalPlayer.Idled:Connect(function()
+player.Idled:Connect(function()
     VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
     wait(1)
     VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
