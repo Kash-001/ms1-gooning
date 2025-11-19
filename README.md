@@ -4,29 +4,6 @@ This script was made to automate any task that can be automated on [mining simul
 
 ![Gooning v1](https://github.com/Kash-001/ms1-gooning/blob/main/8369b1e4-a773-48ed-bb32-c3d0debf2472.webp)
 
-## Features
-
-- **Full Automation**: Automate mining, selling, and rebirthing processes.
-- **Modular Automation**: Enable or disable individual automation tasks (mining, selling, rebirthing) as needed.
-- **Easy Configuration**: Configure easily the script.
-- **Clean GUI**: Nice and customizable UI from Kavo.
-- **Continuity**: Brings you back to farming after falling into void.
-- **Anti Collapsing**: Automatically gets you to the mine.
-- **Efficiency**: Fast selling and mining methods.
-
-## Upcomming Features
-
-- nothing for now, let me know if you need something
-
-## Latest Update
-
-- Added halloween shop access
-- Improved selling and mining
-- Improved overhaul performances
-- fixed falling in void and mine reset
-- added wait for data to avoid reexecution
-- added portage of selling treshold
-- modified the lib to avoid multiple instances of gooning
 
 ## Execution
 
@@ -51,8 +28,10 @@ Thanks to [Kavo UI](https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/mai
 2. **Configure script**: Go to "config" tab, type your selling treshold and hit enter.
 3. **Automations**: From here, you can enable automations, don't enable everything at the same time.
 
+## Autofarm Usage
+1. Go to the lava world, equip your rebirth tools and enable the autofarm
+
 ## Contact
 
 For any bug / suggestion, please contact me at :
 - telegram :  @troyxr
-- discord : cgf0cmljaybszw1hcmnoyw5k
