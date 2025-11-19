@@ -8,7 +8,7 @@ local Workspace = game:GetService("Workspace")
 -- // CLIENT & UI
 local LocalPlayer = Players.LocalPlayer
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kash-001/luau-ui-libraries/refs/heads/main/KavoUiLibrary.lua"))()
-local Window = Library.CreateLib("Gooning [Fixed by Clanker]", "BloodTheme")
+local Window = Library.CreateLib("Gooning v2", "BloodTheme")
 
 -- // WAITING FOR DATA
 while not LocalPlayer:FindFirstChild("leaderstats") do
@@ -69,7 +69,7 @@ LocalPlayer.CharacterAdded:Connect(function(NewChar)
     -- AUTO-RESUME LOGIC
     if IsAutoFarmEnabled then
         task.wait(1)
-        warn("[Clanker] > Respawn detected. Resuming Autofarm...")
+        warn("Respawn detected. Resuming Autofarm...")
         GoBackMining()
     end
 end)
@@ -436,3 +436,4 @@ end)
 LocalPlayer.leaderstats.Rebirths.Changed:connect(function()
     TotalRebirthsLabel:UpdateLabel("Total Blocks : "..formatNumberThreeDigits(LocalPlayer.leaderstats.Rebirths.Value))
 end)
+
