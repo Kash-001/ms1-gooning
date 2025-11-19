@@ -2,7 +2,7 @@
 
 This script was made to automate any task that can be automated on [mining simulator 1](https://www.roblox.com/fr/games/1417427737/Mining-Simulator), roblox.
 
-![Gooning v1](https://github.com/Kash-001/ms1-gooning/blob/main/8369b1e4-a773-48ed-bb32-c3d0debf2495.webp)
+![Gooning v1](https://github.com/Kash-001/ms1-gooning/blob/main/8369b1e4-a773-48ed-bb32-c3d0debf2472.webp)
 
 ## Features
 
